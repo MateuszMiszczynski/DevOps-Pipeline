@@ -1,2 +1,3 @@
 # python-DevOps
-My first Dev-Ops related project
+DevOps project for portfolio
+In progress ...
