@@ -16,7 +16,7 @@ jobs:
             - name: Building Notification
               run: echo "Building..."
             - name: Generate Short Commit ID for Docker
-              run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-c7)" >> $GITHUB_ENV
+              run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
             - name: Build Docker Image with Commit TAg
               run: docker build -t mateuszmiszczynski/devops-pipeline:${{ env.SHORT_SHA }} .
             - name: Login to DockerHub
