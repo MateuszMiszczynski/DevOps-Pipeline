@@ -1,0 +1,25 @@
+---
+
+name: DevOps-Pipeline
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build_push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
+            - name: Building Notification
+              run: echo "Building..."
+            - name: Generate Short Commit ID for Docker
+              run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-c7)" >> $GITHUB_ENV
+            - name: Build Docker Image with Commit TAg
+              run: docker build -t mateuszmiszczynski/devops-pipeline:${{ env.SHORT_SHA }} .
+            - name: Login to DockerHub
+              run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+            - name: Push to docker
+              run: docker push mateuszmiszczynski/devops-pipeline:${{ env.SHORT_SHA }}
