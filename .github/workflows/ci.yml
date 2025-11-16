@@ -14,7 +14,7 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v2
             - name: Building Notification
-              run: echo "Building..."
+              run: echo "Building"
             - name: Generate Short Commit ID for Docker
               run: echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
             - name: Build Docker Image with Commit TAg
@@ -23,3 +23,13 @@ jobs:
               run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
             - name: Push to docker
               run: docker push mateuszmiszczynski/devops-pipeline:${{ env.SHORT_SHA }}
+            - name: Configure Git Author
+              run: |
+                git config --local user.email "miszczynski.job@gmail.com"
+                git config --local user.name "Mateusz"
+            - name: New image tag to chart
+              run: |
+                sed -i "s/tag:.*/tag: ${{ env.SHORT_SHA }}/" ./DevOps-Pipeline-time-printer/values.yaml
+                git add ./DevOps-Pipeline-time-printer/values.yaml
+                git commit -m "Image tag updated to ${{ env.SHORT_SHA }}"
+                git push
