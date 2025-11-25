@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "DevOps-Pipeline-time-printer.fullname" . }}
+  name: {{ include "devops-pipeline-time-printer.fullname" . }}
   labels:
-    {{- include "DevOps-Pipeline-time-printer.labels" . | nindent 4 }}
+    {{- include "devops-pipeline-time-printer.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "DevOps-Pipeline-time-printer.fullname" . }}
+    name: {{ include "devops-pipeline-time-printer.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

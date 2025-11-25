@@ -29,7 +29,7 @@ jobs:
                 git config --local user.name "Mateusz"
             - name: New image tag to chart
               run: |
-                sed -i "s/tag:.*/tag: ${{ env.SHORT_SHA }}/" ./DevOps-Pipeline-time-printer/values.yaml
-                git add ./DevOps-Pipeline-time-printer/values.yaml
+                sed -i "s/tag:.*/tag: ${{ env.SHORT_SHA }}/" ./devops-pipeline-time-printer/values.yaml
+                git add ./devops-pipeline-time-printer/values.yaml
                 git commit -m "Image tag updated to ${{ env.SHORT_SHA }}"
                 git push

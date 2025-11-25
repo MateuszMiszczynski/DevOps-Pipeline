@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "DevOps-Pipeline-time-printer.fullname" . }}
+  name: {{ include "devops-pipeline-time-printer.fullname" . }}
   labels:
-    {{- include "DevOps-Pipeline-time-printer.labels" . | nindent 4 }}
+    {{- include "devops-pipeline-time-printer.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "DevOps-Pipeline-time-printer.selectorLabels" . | nindent 6 }}
+      {{- include "Ddevops-pipeline-time-printer.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "DevOps-Pipeline-time-printer.labels" . | nindent 8 }}
+        {{- include "devops-pipeline-time-printer.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -27,7 +27,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "DevOps-Pipeline-time-printer.serviceAccountName" . }}
+      serviceAccountName: {{ include "devops-pipeline-time-printer.serviceAccountName" . }}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
