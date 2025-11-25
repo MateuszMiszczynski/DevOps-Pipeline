@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: "https://github.com/MateuszMiszczynski/DevOps-Pipeline"
     targetRevision: HEAD
-    path: DevOps-Pipeline-time-printer
+    path: devops-pipeline-time-printer
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
