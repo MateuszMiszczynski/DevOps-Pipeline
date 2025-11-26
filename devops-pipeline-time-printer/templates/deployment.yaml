@@ -10,7 +10,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "Ddevops-pipeline-time-printer.selectorLabels" . | nindent 6 }}
+      {{- include "devops-pipeline-time-printer.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
