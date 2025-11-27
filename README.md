@@ -45,12 +45,26 @@ Monitors the GitHub repository, ensures the cluster state matches Git, and autom
 # Initialize Terraform
 terraform init -upgrade
 
-# Deploy MiniKube + Argo CD
+# Plan & Apply Infrastructure
+terraform plan
 terraform apply
 
-# Configure Argo CD
-# 1. Add repository with PAT
-# 2. Deploy ArgoCDApp.yaml
+# Access Argo CD UI
+kubectl port-forward svc/argocd-server -n argocd 8081:443
+Note: Port forwarding may vary depending on your system.
+
+# Open https://127.0.0.1:8081 in a browser.
+Login credentials:
+Username: admin
+Password:
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+
+# Connect Git Repository - Generate a GitHub Personal Access Token (PAT) with repo authorization first
+argocd repo add <repo_url> --username <github_username> --password <personal_access_token> --server localhost:8081 --insecure
+
+# Deploy Application via Argo CD
+kubectl apply -f argocd-path.yaml
+
 ```
 
 ---
