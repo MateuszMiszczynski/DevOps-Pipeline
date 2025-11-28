@@ -58,6 +58,8 @@ Login credentials:
 Username: admin
 Password:
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+And then use it in this command to login into Argo CD CLI
+argocd login localhost:8081 --username admin --password <password> --insecure
 
 # Connect Git Repository - Generate a GitHub Personal Access Token (PAT) with repo authorization first
 argocd repo add <repo_url> --username <github_username> --password <personal_access_token> --server localhost:8081 --insecure
