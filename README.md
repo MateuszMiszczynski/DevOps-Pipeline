@@ -47,7 +47,7 @@ terraform init -upgrade
 
 # Plan & Apply Infrastructure
 terraform plan
-terraform apply
+terraform apply (after first error will occure but the solution is to simply hit terraform apply second time, it happens because terraform first needs to create docker container and then the rest)
 
 # Access Argo CD UI
 kubectl port-forward svc/argocd-server -n argocd 8081:443
