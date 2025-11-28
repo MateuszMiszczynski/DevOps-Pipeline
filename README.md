@@ -43,23 +43,24 @@ Monitors the GitHub repository, ensures the cluster state matches Git, and autom
 
 ```bash
 # Initialize Terraform
+cd terraform-configs/
 terraform init -upgrade
 
 # Plan & Apply Infrastructure
 terraform plan
 terraform apply
-The first terraform apply may fail because Terraform must create the Docker container before configuring the rest. Running terraform apply a second time resolves the issue.
+# The first terraform apply may fail because Terraform must create the Docker container before configuring the rest. Running terraform apply a second time resolves the issue.
 
 # Access Argo CD UI
 kubectl port-forward svc/argocd-server -n argocd 8081:443
-Note: Port forwarding may vary depending on your system.
+# Port forwarding may vary depending on your system.
 
 # Open https://127.0.0.1:8081 in a browser
-Login credentials:
-Username: admin
-Password:
+# Login credentials:
+# Username: admin
+# Password:
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
-And then use it in this command to login into Argo CD CLI
+# And then use it in this command to login into Argo CD CLI
 argocd login localhost:8081 --username admin --password <password> --insecure
 
 # Connect Git Repository - Generate a GitHub Personal Access Token (PAT) with repo authorization first
@@ -70,11 +71,11 @@ kubectl apply -f argocd-path.yaml
 
 # Access the application
 kubectl get pods --all-namespaces
-Find the pod running in the "default" NAMESPACE and than forward it
+
+# Find the pod running in the "default" NAMESPACE and than forward it
 kubectl port-forward pod/<pod_name> 8080:8080 -n default
 
-Open the application:
-http://localhost:8080
+# Open the application http://localhost:8080
 
 
 ```
