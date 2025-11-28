@@ -58,6 +58,29 @@ When it detects a tag update in `values.yaml`, it automatically:
 ### 4. Deployment Verification
 The developer performs port-forwarding and opens the application in the browser to view the new version.
 
+---
+
+## Quick Start & Troubleshooting Tips
+
+This project involves complex integration between Docker, MiniKube, and GitOps. I spent several hours working through it and ran into multiple tricky issues along the way, so here are a few critical tips based on where I personally got stuck, following them may save you a lot of time and debugging effort!
+
+### First-Time Setup (Replication)
+
+If you are running this repository from scratch:
+
+1.  **Fork the Repo:** Make sure you **fork this repository** to your own GitHub account. This is essential because GitHub Actions needs write permissions to push automatic updates to `values.yaml`.
+2.  **Credentials:** Create your own **Docker Hub Token** (for CI) and **GitHub Personal Access Token (PAT)** (for Argo CD). Unfortunately you can't use mine.
+3.  **Run Setup:** Proceed exact the same steps I wrote down.
+
+### Troubleshooting & Restarting
+
+If you need to test the pipeline again next week, or if you encounter persistent initialization errors (like "x509 certificate error" or "connection refused"):
+
+*   **Delete Logical State:** Delete the `terraform.tfstate` file from `terraform-configs/` (rm terraformm.tfstate*).
+*   **Deep Clean MiniKube:** This step may help. Delete containers, images, and **volumes** from previous Docker/MiniKube runs. This is crucial as it removes corrupt cluster data (like old certificates and addresses) that prevent a clean restart.
+
+---
+
 ## Setup
 
 ```bash
