@@ -1,5 +1,8 @@
 # DevOps Project: Automated CI/CD & GitOps Pipeline
 
+![Uploading image.png…]()
+
+
 ## Project Overview
 
 This repository demonstrates a **fully automated DevOps pipeline** integrating **CI/CD** and **GitOps** practices. The project automatically deploys a simple **Python Flask web app** to a local **MiniKube** cluster on every GitHub push.
