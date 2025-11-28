@@ -47,13 +47,14 @@ terraform init -upgrade
 
 # Plan & Apply Infrastructure
 terraform plan
-terraform apply (after first error will occure but the solution is to simply hit terraform apply second time, it happens because terraform first needs to create docker container and then the rest)
+terraform apply
+The first terraform apply may fail because Terraform must create the Docker container before configuring the rest. Running terraform apply a second time resolves the issue.
 
 # Access Argo CD UI
 kubectl port-forward svc/argocd-server -n argocd 8081:443
 Note: Port forwarding may vary depending on your system.
 
-# Open https://127.0.0.1:8081 in a browser.
+# Open https://127.0.0.1:8081 in a browser
 Login credentials:
 Username: admin
 Password:
@@ -66,6 +67,15 @@ argocd repo add <repo_url> --username <github_username> --password <personal_acc
 
 # Deploy Application via Argo CD
 kubectl apply -f argocd-path.yaml
+
+# Access the application
+kubectl get pods --all-namespaces
+Find the pod running in the "default" NAMESPACE and than forward it
+kubectl port-forward pod/<pod_name> 8080:8080 -n default
+
+Open the application:
+http://localhost:8080
+
 
 ```
 
