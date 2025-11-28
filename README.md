@@ -1,6 +1,6 @@
 # DevOps Project: Automated CI/CD & GitOps Pipeline
 
-![Uploading image.png…]()
+<img width="952" height="395" alt="ArgoCD" src="https://github.com/user-attachments/assets/3675bc47-cca9-4ea8-91e1-42d4f2e06cbd" />
 
 
 ## Project Overview
