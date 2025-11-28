@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def get_time():
-    cur_time=time.strftime("%Y-%m-$d %H:%M:S", time.localtime)
+    cur_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     return f"The current time is: {cur_time}"
 
 if __name__ == "__main__":
