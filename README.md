@@ -1,5 +1,8 @@
 # DevOps Project: Automated CI/CD & GitOps Pipeline
 
+<img width="952" height="395" alt="ArgoCD" src="https://github.com/user-attachments/assets/3675bc47-cca9-4ea8-91e1-42d4f2e06cbd" />
+
+
 ## Project Overview
 
 This repository demonstrates a **fully automated DevOps pipeline** integrating **CI/CD** and **GitOps** practices. The project automatically deploys a simple **Python Flask web app** to a local **MiniKube** cluster on every GitHub push.
@@ -30,12 +33,51 @@ Monitors the GitHub repository, ensures the cluster state matches Git, and autom
 
 ---
 
-## Workflow
+## Workflow (How the Automation Works)
 
-1. **Code Change:** Developer edits `app.py` and pushes to GitHub.
-2. **CI (GitHub Actions):** Builds Docker image → pushes to Docker Hub → updates Helm chart `values.yaml`.
-3. **GitOps/CD (Argo CD):** Detects changes → syncs cluster → deploys the new version automatically.
-4. **Verification:** `kubectl port-forward svc/<service> 8080:8080` → open [http://localhost:8080](http://localhost:8080).
+### 1. Code Change
+A developer modifies the `app.py` file and runs `git push`. This triggers the entire pipeline.
+
+### 2. Continuous Integration (CI) – GitHub Actions
+The GitHub Actions pipeline automatically:
+
+- builds the application's Docker image,
+- tags it with the commit hash (e.g., `94cfc55`),
+- pushes the image to Docker Hub,
+- updates the image tag inside the `values.yaml` file (Helm Chart),
+- commits this change back to the repository.
+
+### 3. GitOps / Continuous Delivery (CD) – Argo CD
+Argo CD continuously watches the Git repository.  
+When it detects a tag update in `values.yaml`, it automatically:
+
+- synchronizes the cluster,
+- deploys the new version of the application,
+- ensures that the cluster state matches the repository state (GitOps principle).
+
+### 4. Deployment Verification
+The developer performs port-forwarding and opens the application in the browser to view the new version.
+
+---
+
+## Quick Start & Troubleshooting Tips
+
+This project involves complex integration between Docker, MiniKube, and GitOps. I spent several hours working through it and ran into multiple tricky issues along the way, so here are a few critical tips based on where I personally got stuck, following them may save you a lot of time and debugging effort!
+
+### First-Time Setup (Replication)
+
+If you are running this repository from scratch:
+
+1.  **Fork the Repo:** Make sure you **fork this repository** to your own GitHub account. This is essential because GitHub Actions needs write permissions to push automatic updates to `values.yaml`.
+2.  **Credentials:** Create your own **Docker Hub Token** (for CI) and **GitHub Personal Access Token (PAT)** (for Argo CD). Unfortunately you can't use mine.
+3.  **Run Setup:** Proceed exact the same steps I wrote down.
+
+### Troubleshooting & Restarting
+
+If you need to test the pipeline again next week, or if you encounter persistent initialization errors (like "x509 certificate error" or "connection refused"):
+
+*   **Delete Logical State:** Delete the `terraform.tfstate` file from `terraform-configs/` (rm terraformm.tfstate*).
+*   **Deep Clean MiniKube:** This step may help. Delete containers, images, and **volumes** from previous Docker/MiniKube runs. This is crucial as it removes corrupt cluster data (like old certificates and addresses) that prevent a clean restart.
 
 ---
 
@@ -43,22 +85,24 @@ Monitors the GitHub repository, ensures the cluster state matches Git, and autom
 
 ```bash
 # Initialize Terraform
+cd terraform-configs/
 terraform init -upgrade
 
 # Plan & Apply Infrastructure
 terraform plan
-terraform apply (after first error will occure but the solution is to simply hit terraform apply second time, it happens because terraform first needs to create docker container and then the rest)
+terraform apply
+# The first terraform apply may fail because Terraform must create the Docker container before configuring the rest. Running terraform apply a second time resolves the issue.
 
 # Access Argo CD UI
 kubectl port-forward svc/argocd-server -n argocd 8081:443
-Note: Port forwarding may vary depending on your system.
+# Port forwarding may vary depending on your system.
 
-# Open https://127.0.0.1:8081 in a browser.
-Login credentials:
-Username: admin
-Password:
+# Open https://127.0.0.1:8081 in a browser
+# Login credentials:
+# Username: admin
+# Password:
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
-And then use it in this command to login into Argo CD CLI
+# And then use it in this command to login into Argo CD CLI
 argocd login localhost:8081 --username admin --password <password> --insecure
 
 # Connect Git Repository - Generate a GitHub Personal Access Token (PAT) with repo authorization first
@@ -67,20 +111,62 @@ argocd repo add <repo_url> --username <github_username> --password <personal_acc
 # Deploy Application via Argo CD
 kubectl apply -f argocd-path.yaml
 
+# Access the application
+kubectl get pods --all-namespaces
+
+# Find the pod running in the "default" NAMESPACE and than forward it
+kubectl port-forward pod/<pod_name> 8080:8080 -n default
+
+# Open the application http://localhost:8080
+
+
 ```
 
 ---
 
-## Skills & Learnings
+## Testing the Full GitOps (CI/CD) Loop
 
-* **IaC & Terraform:** Manage local Kubernetes clusters.
-* **Docker & Containerization:** Build, tag, and deploy images.
-* **CI/CD Pipelines:** Automate build, test, and deployment using GitHub Actions.
-* **Helm:** Simplified Kubernetes deployment and configuration management.
-* **GitOps:** Automated, self-healing deployments using Argo CD.
-* **DevOps Practices:** End-to-end automation, version control integration, reproducible deployments.
+To test the entire pipeline:
+
+1. **Make a change** in `app.py`.
+
+2. **Commit and push the code:**
+```bash
+git add .
+git commit -m "Update: new feature message"
+git pull      # merge the automatic commit generated by GitHub Actions (values.yaml)
+git push origin main
+
+
+```
 
 ---
+
+## Skills & Key Takeaways
+
+This project provided hands-on experience in areas essential for a DevOps role:
+
+- **IaC (Infrastructure as Code)**  
+  Automated management of a local Kubernetes cluster (MiniKube) using Terraform.
+
+- **GitOps (Argo CD)**  
+  Self-healing deployments, tracking changes in Git, and full application state synchronization.
+
+- **CI/CD with GitHub Actions**  
+  Automating the build, tagging, publishing of Docker images, and updating Helm Charts.
+
+- **Helm**  
+  Simplified and repeatable application deployments on Kubernetes.
+
+- **Containerization (Docker)**  
+  Building, optimizing, and publishing container images.
+
+- **DevOps Best Practices**  
+  Integration of automation, version control, declarative infrastructure, and container orchestration.
+
+
+---
+
 
 ## References
 
