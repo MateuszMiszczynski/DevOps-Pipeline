@@ -207,6 +207,10 @@ marimo/_lsp/
 __marimo__/
 
 terraform-configs/
+!terraform-configs/backend.tf
+!terraform-configs/kube_config.tf
+!terraform-configs/argocd.tf
+!terraform-configs/minikube.tf
 *.tfstate
 *.tfstate*
 
